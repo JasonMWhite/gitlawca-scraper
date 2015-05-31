@@ -164,7 +164,7 @@ class TestCanadaLawSpider(object):
             'code': 'A-1',
             'language': 'eng',
             'title': 'Access to Information Act',
-            'act_date': '20150511'
+            'act_date': '20150423'
         }
         request = Mock()
         request.meta = meta
@@ -178,7 +178,7 @@ class TestCanadaLawSpider(object):
         assert item['short_title'] == ['Access to Information Act']
         assert item['language'] == ['eng']
         assert item['long_title'] == ['An Act to extend the present laws of Canada that provide access to information under the control of the Government of Canada']
-        assert item['act_date'] == ['20150511']
+        assert item['act_date'] == ['20150423']
 
     def test_parse_full_document_without_date(self, spider, full_document):
         del full_document.request.meta['act_date']
@@ -189,4 +189,4 @@ class TestCanadaLawSpider(object):
         assert item['short_title'] == ['Access to Information Act']
         assert item['language'] == ['eng']
         assert item['long_title'] == ['An Act to extend the present laws of Canada that provide access to information under the control of the Government of Canada']
-        assert item['act_date'] == ['20150511']
+        assert item['act_date'] == ['20150423']

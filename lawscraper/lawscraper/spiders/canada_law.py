@@ -60,7 +60,7 @@ class CanadaLawSpider(scrapy.Spider):
             loader.add_value('act_date', response.meta['act_date'])
         else:
             act_date = content.xpath("div[@class='info']/text()").extract()[0]
-            act_date = act_date[-11:-1].replace('-', '')
+            act_date = act_date[-25:-15].replace('-', '')
             loader.add_value('act_date', act_date)
 
         yield loader.load_item()
