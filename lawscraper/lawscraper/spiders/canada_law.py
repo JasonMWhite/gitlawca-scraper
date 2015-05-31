@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 import scrapy
 from urlparse import urljoin
-from lawscraper.items import ActItem
+from lawscraper.lawscraper.items import ActItem
 from scrapy.contrib.loader import ItemLoader
 
 
