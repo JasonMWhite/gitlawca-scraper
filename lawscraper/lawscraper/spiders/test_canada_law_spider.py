@@ -94,6 +94,22 @@ class TestCanadaLawSpider(object):
         assert response.callback == spider.parse_xml_document
 
     @pytest.fixture
+    def toc_response_without_required_data(self):
+        body = "<div id='wb-main-in'><header>Something</header></div>"
+        meta = {
+            'code': 'A-1',
+            'language': 'eng',
+            'title': 'Access to Information Act'
+        }
+        request = Mock()
+        request.meta = meta
+        return HtmlResponse(str('http://laws-lois.justice.gc.ca/eng/acts/A-1/index.html'), body=str(body), request=request)
+
+    def test_parse_toc_without_required_data(self, spider, toc_response_without_required_data):
+        response = [x for x in spider.parse_toc(toc_response_without_required_data)]
+        assert len(response) == 0
+
+    @pytest.fixture
     def previous_versions_response(self):
         body = "<div id='wb-main' role='main'><div id='wb-main-in'><div class='wet-boew-texthighlight'>" + \
                "<h2 id='wb-cont' class='PITIndex'>Full Documents available for previous versions</h2>" + \

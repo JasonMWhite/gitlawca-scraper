@@ -14,6 +14,7 @@ settings = Settings()
 
 # crawl responsibly
 settings.set("USER_AGENT", "Gitlaw-ca Scraper (+https://github.com/JasonMWhite/gitlawca-scraper)")
+settings.set("ITEM_PIPELINES", {'lawscraper.lawscraper.pipelines.LawscraperPipeline': 100})
 crawler = Crawler(settings)
 
 # stop reactor when spider closes

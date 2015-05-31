@@ -15,3 +15,7 @@ NEWSPIDER_MODULE = 'lawscraper.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'lawscraper (+http://www.yourdomain.com)'
+
+ITEM_PIPELINES = {
+    'lawscraper.lawscraper.pipelines.LawscraperPipeline': 100
+}
