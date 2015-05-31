@@ -4,3 +4,6 @@ service_identity
 beautifulsoup
 pytest
 mock
+sqlalchemy
+alembic
+mysql-python
