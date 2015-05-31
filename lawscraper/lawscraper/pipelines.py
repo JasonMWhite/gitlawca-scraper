@@ -9,7 +9,7 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-Base = declarative_base()
+Base = declarative_base() #pylint: disable=invalid-name
 
 class Act(Base):
     __tablename__ = 'acts'
