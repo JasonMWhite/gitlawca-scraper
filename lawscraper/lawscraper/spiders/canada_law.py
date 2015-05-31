@@ -27,12 +27,14 @@ class CanadaLawSpider(scrapy.Spider):
             path = urljoin(response.url, previous_version_links[0])
             yield scrapy.Request(path, self.parse_previous_versions, meta=response.meta)
         else:
-            html_link = response.xpath("//div[@id='printAll']//a[text()='HTML']/@href").extract()[0]
-            xml_link = response.xpath("//div[@id='printAll']//a[text()='XML']/@href").extract()[0]
-            meta = response.meta
-            meta['html_link'] = urljoin(response.url, html_link)
-            path = urljoin(response.url, xml_link)
-            yield scrapy.Request(path, self.parse_xml_document, meta=meta)
+            html_link = response.xpath("//div[@id='printAll']//a[text()='HTML']/@href").extract()
+            if len(html_link) > 0:
+                html_link = html_link[0]
+                xml_link = response.xpath("//div[@id='printAll']//a[text()='XML']/@href").extract()[0]
+                meta = response.meta
+                meta['html_link'] = urljoin(response.url, html_link)
+                path = urljoin(response.url, xml_link)
+                yield scrapy.Request(path, self.parse_xml_document, meta=meta)
 
     def parse_previous_versions(self, response):
         version_links = response.xpath("//div[@id='wb-main-in']/div[@class='wet-boew-texthighlight']/ul//li/a/@href").extract()
