@@ -5,7 +5,7 @@ from scrapy.http.response.html import HtmlResponse
 import pytest
 from mock import Mock
 
-
+#pylint: disable=R0201
 class TestCanadaLawSpider(object):
 
     @pytest.fixture
