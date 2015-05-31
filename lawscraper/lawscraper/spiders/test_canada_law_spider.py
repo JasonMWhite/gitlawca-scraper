@@ -159,7 +159,7 @@ class TestCanadaLawSpider(object):
                '<section class="intro"><header><h1 class="Title-of-Act">Access to Information Act</h1>' \
                '<p class="ChapterNumber"><abbr title="Revised Statutes of Canada">R.S.C.</abbr>, 1985, c. A-1</p></header>' \
                '<p class="LongTitle" id="id-lt">An Act to extend the present laws of Canada that provide access to information under the control of the Government of Canada</p>' \
-               '</section></div></div>'
+               '</section></div></section></div></div></div>'
         meta = {
             'code': 'A-1',
             'language': 'eng',
@@ -179,6 +179,7 @@ class TestCanadaLawSpider(object):
         assert item['language'] == ['eng']
         assert item['long_title'] == ['An Act to extend the present laws of Canada that provide access to information under the control of the Government of Canada']
         assert item['act_date'] == ['20150423']
+        assert len(item['body'][0]) == 478
 
     def test_parse_full_document_without_date(self, spider, full_document):
         del full_document.request.meta['act_date']
@@ -190,3 +191,4 @@ class TestCanadaLawSpider(object):
         assert item['language'] == ['eng']
         assert item['long_title'] == ['An Act to extend the present laws of Canada that provide access to information under the control of the Government of Canada']
         assert item['act_date'] == ['20150423']
+        assert len(item['body'][0]) == 478

@@ -56,6 +56,7 @@ class CanadaLawSpider(scrapy.Spider):
         loader.add_value('short_title', response.meta['title'])
         loader.add_value('language', response.meta['language'])
         loader.add_xpath('long_title', ".//p[@id='id-lt']/text()")
+        loader.add_xpath('body', '.')
         if 'act_date' in response.meta:
             loader.add_value('act_date', response.meta['act_date'])
         else:
