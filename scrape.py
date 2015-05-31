@@ -4,7 +4,8 @@ from twisted.internet import reactor
 from scrapy.crawler import Crawler
 from scrapy.settings import Settings
 
-def spider_closing(spider):
+#pylint: disable=no-member
+def spider_closing(_):
     """Activates on spider closed signal"""
     log.msg("Closing reactor", level=log.INFO)
     reactor.stop()
