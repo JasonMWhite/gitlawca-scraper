@@ -4,8 +4,8 @@ machine:
 
 dependencies:
   override:
-    - cp alembic.ini.example alembic.ini
-    
+    - cp alembic.ini.circle alembic.ini
+
 database:
   override:
     - mysql -u ubuntu < script/mysql-setup.sql

@@ -29,7 +29,7 @@ script_location = migrations
 # are written from script.py.mako
 # output_encoding = utf-8
 
-sqlalchemy.url = mysql://user:pass@shop.myshopify.io/gitlawca
+sqlalchemy.url = mysql://ubuntu@localhost/gitlawca
 
 
 # Logging configuration
