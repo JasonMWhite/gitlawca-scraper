@@ -1,0 +1,6 @@
+database:
+  host: hostname
+  port: 3306
+  database: gitlawca
+  username: username
+  password: password
