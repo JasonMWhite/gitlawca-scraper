@@ -50,7 +50,8 @@ class CanadaLawSpider(scrapy.Spider):
         meta['act_date'] = act_date
         yield scrapy.Request(html_link, self.parse_full_document, meta=meta)
 
-    def parse_full_document(self, response):
+    @staticmethod
+    def parse_full_document(response):
         content = response.xpath("//div[@id='wb-main-in']//div[@class='wet-boew-texthighlight']")
 
         loader = ItemLoader(item=ActItem(), selector=content, response=response)
