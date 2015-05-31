@@ -2,6 +2,10 @@ machine:
   python:
     version: 2.7.9
 
+dependencies:
+  override:
+    - cp alembic.ini.example alembic.ini
+    
 database:
   override:
     - mysql -u ubuntu < script/mysql-setup.sql
