@@ -19,9 +19,9 @@ class CanadaLawSpider(scrapy.Spider):
             language = act.xpath("Language/text()").extract()[0]
             title = act.xpath("Title/text()").extract()[0]
             path = act.xpath("LinkToHTMLToC/text()").extract()[0]
-            yield scrapy.Request(path, self.parse_act, meta={'code': code, 'language': language, 'title': title})
+            yield scrapy.Request(path, self.parse_toc, meta={'code': code, 'language': language, 'title': title})
 
-    def parse_act(self, response):
+    def parse_toc(self, response):
         previous_version_links = response.xpath("//p[@id='assentedDate']/a[text()='Previous Versions']/@href").extract()
         if len(previous_version_links) > 0:
             path = urljoin(response.url, previous_version_links[0])
@@ -35,9 +35,10 @@ class CanadaLawSpider(scrapy.Spider):
             yield scrapy.Request(path, self.parse_xml_document, meta=meta)
 
     def parse_previous_versions(self, response):
-        version_links = response.xpath("//div[@id='wb-main-in']/div[@class='wet-boew-texthighlight']/ul/li/a/@href").extract()
+        version_links = response.xpath("//div[@id='wb-main-in']/div[@class='wet-boew-texthighlight']/ul//li/a/@href").extract()
         paths = [urljoin(response.url, path) for path in version_links]
-        return [scrapy.Request(path, self.parse_full_document, meta=response.meta) for path in paths]
+        for path in paths:
+            yield scrapy.Request(path, self.parse_full_document, meta=response.meta)
 
     def parse_xml_document(self, response):
         meta = response.meta
