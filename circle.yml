@@ -1,0 +1,6 @@
+machine:
+  python:
+    version: 2.7.9
+test:
+  override:
+    - "py.test lawscraper -vv --durations=10 --junitxml=$CIRCLE_TEST_REPORTS/pytest.xml"
