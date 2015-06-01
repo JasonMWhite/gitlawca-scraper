@@ -23,32 +23,39 @@ class CanadaLawSpider(scrapy.Spider):
 
     def parse_toc(self, response):
         previous_version_links = response.xpath("//p[@id='assentedDate']/a[text()='Previous Versions']/@href").extract()
-        if len(previous_version_links) > 0:
-            path = urljoin(response.url, previous_version_links[0])
-            yield scrapy.Request(path, self.parse_previous_versions, meta=response.meta)
-        else:
-            html_link = response.xpath("//div[@id='printAll']//a[text()='HTML']/@href").extract()
-            if len(html_link) > 0:
-                html_link = html_link[0]
-                xml_link = response.xpath("//div[@id='printAll']//a[text()='XML']/@href").extract()[0]
-                meta = response.meta
-                meta['html_link'] = urljoin(response.url, html_link)
-                path = urljoin(response.url, xml_link)
-                yield scrapy.Request(path, self.parse_xml_document, meta=meta)
+        xml_link = response.xpath("//div[@id='printAll']//a[text()='XML']/@href").extract()
 
-    def parse_previous_versions(self, response):
-        version_links = response.xpath("//div[@id='wb-main-in']/div[@class='wet-boew-texthighlight']/ul//li/a/@href").extract()
-        paths = [urljoin(response.url, path) for path in version_links]
-        for path in paths:
-            yield scrapy.Request(path, self.parse_full_document, meta=response.meta)
+        if len(previous_version_links) > 0:
+            response.meta['html_link'] = previous_version_links[0]
+
+        if len(xml_link) > 0:
+            path = urljoin(response.url, xml_link)
+            yield scrapy.Request(path, self.parse_xml_document, meta=response.meta)
 
     def parse_xml_document(self, response):
         meta = response.meta
         html_link = meta.pop('html_link')
 
-        act_date = response.xpath('/Statute/@startdate').extract()[0]
-        meta['act_date'] = act_date
+        meta['act_date'] = response.xpath('/Statute/@startdate').extract()[0]
+        meta['long_title'] = response.xpath('/Statute/Identification/LongTitle/text()').extract()[0]
+
+        if html_link is None:
+            # yield item - no more info is coming
+            pass
+
+        # yield request for previous versions doc
         yield scrapy.Request(html_link, self.parse_full_document, meta=meta)
+
+    def parse_previous_versions(self, response):
+        version_links = response.xpath("//div[@id='wb-main-in']/div[@class='wet-boew-texthighlight']/ul//li/a/@href").extract()
+        paths = [urljoin(response.url, path) for path in version_links]
+        for path in paths:
+            loader = ItemLoader(item=ActItem(), response=response)
+            loader.add_value('code', response.meta['code'])
+            loader.add_value('short_title', response.meta['title'])
+            loader.add_value('language', response.meta['language'])
+            loader.add_value('url', path)
+            yield loader.load_item()
 
     @staticmethod
     def parse_full_document(response):
@@ -58,8 +65,6 @@ class CanadaLawSpider(scrapy.Spider):
         loader.add_value('code', response.meta['code'])
         loader.add_value('short_title', response.meta['title'])
         loader.add_value('language', response.meta['language'])
-        loader.add_xpath('long_title', ".//p[@id='id-lt']/text()")
-        loader.add_xpath('body', '.')
         if 'act_date' in response.meta:
             loader.add_value('act_date', response.meta['act_date'])
         else:
