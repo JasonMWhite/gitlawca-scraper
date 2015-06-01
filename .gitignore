@@ -1,4 +1,3 @@
 .idea
 *.pyc
-alembic.ini
-
+config.yml

@@ -8,3 +8,4 @@ sqlalchemy
 alembic
 mysql-python
 pylint
+pyyaml
