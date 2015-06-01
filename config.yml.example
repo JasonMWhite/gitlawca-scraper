@@ -1,6 +1,6 @@
 database:
-  host: hostname
+  host: localhost
   port: 3306
   database: gitlawca
-  username: username
+  username: admin
   password: password

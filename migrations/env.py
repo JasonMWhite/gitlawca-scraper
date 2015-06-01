@@ -22,6 +22,15 @@ target_metadata = None
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
+def construct_engine_url():
+    from os import path, sys
+    sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+    from app.config import config
+    db = config('database')
+    if db['password']:
+        return 'mysql://{0}:{1}@{2}/{3}'.format(db['username'], db['password'], db['host'], db['database'])
+    else:
+        return 'mysql://{0}@{1}/{2}'.format(db['username'], db['host'], db['database'])
 
 def run_migrations_offline():
     """Run migrations in 'offline' mode.
@@ -50,8 +59,11 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
+    engine_config = config.get_section(config.config_ini_section)
+    engine_config['sqlalchemy.url'] = construct_engine_url()
+
     connectable = engine_from_config(
-        config.get_section(config.config_ini_section),
+        engine_config,
         prefix='sqlalchemy.',
         poolclass=pool.NullPool)
 
