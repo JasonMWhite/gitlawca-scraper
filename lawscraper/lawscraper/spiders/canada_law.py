@@ -37,7 +37,8 @@ class CanadaLawSpider(scrapy.Spider):
     def parse_xml_document(self, response):
         meta = response.meta
 
-        meta['long_title'] = response.xpath('/Statute/Identification/LongTitle/text()').extract()[0]
+        long_title = response.xpath('/Statute/Identification/LongTitle/text()').extract()
+        meta['long_title'] = long_title[0] if len(long_title) > 0 else None
 
         if meta['previous_versions'] is None:
             act_date = response.xpath('/Statute/@startdate').extract()[0]

@@ -16,6 +16,7 @@ class Act(Base):
     long_title = Column(String(65000))
     act_date = Column(String(10))
     language = Column(String(10))
+    url = Column(String(1000))
 
 
 class LawscraperPipeline(object):
@@ -26,7 +27,7 @@ class LawscraperPipeline(object):
         session = self.session()
         act = Act(code=item.get('code'), short_title=item.get('short_title'),
                   long_title=item.get('long_title'), act_date=item.get('act_date'),
-                  language=item.get('language'))
+                  language=item.get('language'), url=item.get('url'))
         session.add(act)
         session.commit()
 
