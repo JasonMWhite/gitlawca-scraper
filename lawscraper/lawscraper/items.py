@@ -5,6 +5,7 @@ from scrapy import Item, Field
 class ActItem(Item):
     code = Field()
     short_title = Field()
+    long_title = Field()
     act_date = Field()
     url = Field()
     language = Field()

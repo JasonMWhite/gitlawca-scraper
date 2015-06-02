@@ -60,8 +60,10 @@ class TestCanadaLawSpider(object):
         assert response.meta['code'] == 'A-1'
         assert response.meta['language'] == 'eng'
         assert response.meta['title'] == 'Access to Information Act'
-        assert response.url == str('http://laws-lois.justice.gc.ca/eng/acts/A-1/PITIndex.html')
-        assert response.callback == spider.parse_previous_versions
+        assert response.meta['html_link'] == 'http://laws-lois.justice.gc.ca/eng/acts/A-1/FullText.html'
+        assert response.meta['previous_versions'] == 'http://laws-lois.justice.gc.ca/eng/acts/A-1/PITIndex.html'
+        assert response.url == str('http://laws-lois.justice.gc.ca/eng/XML/A-1.xml')
+        assert response.callback == spider.parse_xml_document
 
     @pytest.fixture
     def toc_response_without_previous_version(self):
@@ -90,6 +92,7 @@ class TestCanadaLawSpider(object):
         assert response.meta['language'] == 'eng'
         assert response.meta['title'] == 'Access to Information Act'
         assert response.meta['html_link'] == 'http://laws-lois.justice.gc.ca/eng/acts/A-1/FullText.html'
+        assert response.meta['previous_versions'] is None
         assert response.url == str('http://laws-lois.justice.gc.ca/eng/XML/A-1.xml')
         assert response.callback == spider.parse_xml_document
 
@@ -120,91 +123,65 @@ class TestCanadaLawSpider(object):
         meta = {
             'code': 'A-1',
             'language': 'eng',
-            'title': 'Access to Information Act'
+            'title': 'Access to Information Act',
+            'long_title': 'Long Access to Information Act Title'
         }
         request = Mock()
         request.meta = meta
         return HtmlResponse(str('http://laws-lois.justice.gc.ca/eng/acts/A-1/PITIndex.html'), body=str(body), request=request)
 
     def test_parse_previous_versions(self, spider, previous_versions_response):
-        responses = [x for x in spider.parse_previous_versions(previous_versions_response)]
-        assert len(responses) == 3
-        for response in responses:
-            assert response.meta['code'] == 'A-1'
-            assert response.meta['language'] == 'eng'
-            assert response.meta['title'] == 'Access to Information Act'
-            assert response.callback == spider.parse_full_document
+        items = [x for x in spider.parse_previous_versions(previous_versions_response)]
+        assert len(items) == 3
+        for item in items:
+            assert item['code'] == ['A-1']
+            assert item['short_title'] == ['Access to Information Act']
+            assert item['long_title'] == ['Long Access to Information Act Title']
+            assert item['language'] == ['eng']
 
-        assert responses[0].url == str('http://laws-lois.justice.gc.ca/eng/acts/A-1/20150423/P1TT3xt3.html')
-        assert responses[1].url == str('http://laws-lois.justice.gc.ca/eng/acts/A-1/20150226/P1TT3xt3.html')
-        assert responses[2].url == str('http://laws-lois.justice.gc.ca/eng/acts/A-1/20150207/P1TT3xt3.html')
+        assert items[0]['url'] == [str('http://laws-lois.justice.gc.ca/eng/acts/A-1/20150423/P1TT3xt3.html')]
+        assert items[0]['act_date'] == ['20150423']
+        assert items[1]['url'] == [str('http://laws-lois.justice.gc.ca/eng/acts/A-1/20150226/P1TT3xt3.html')]
+        assert items[1]['act_date'] == ['20150226']
+        assert items[2]['url'] == [str('http://laws-lois.justice.gc.ca/eng/acts/A-1/20150207/P1TT3xt3.html')]
+        assert items[2]['act_date'] == ['20150207']
 
     @pytest.fixture
     def xml_document(self):
-        body = '<Statute bill-origin="commons" bill-type="govt-public" xml:lang="en" in-force="yes" startdate="20150423"></Statute>'
+        body = '<Statute bill-origin="commons" bill-type="govt-public" xml:lang="en" in-force="yes" startdate="20150423">' \
+               '<Identification><LongTitle>A long title</LongTitle></Identification>' \
+               '</Statute>'
         meta = {
             'code': 'A-1',
             'language': 'eng',
             'title': 'Access to Information Act',
-            'html_link': 'http://laws-lois.justice.gc.ca/eng/acts/A-1/FullText.html'
+            'html_link': 'http://laws-lois.justice.gc.ca/eng/acts/A-1/FullText.html',
+            'previous_versions': None
         }
         request = Mock()
         request.meta = meta
         return XmlResponse(str('http://laws-lois.justice.gc.ca/eng/XML/A-1.xml'), body=str(body), request=request)
 
-    def test_parse_xml_document(self, spider, xml_document):
+    def test_parse_xml_document_with_previous_versions(self, spider, xml_document):
+        xml_document.meta['previous_versions'] = 'http://laws-lois.justice.gc.ca/eng/acts/A-1/PITIndex.html'
         response = [x for x in spider.parse_xml_document(xml_document)]
         assert len(response) == 1
         response = response[0]
         assert response.meta['code'] == 'A-1'
         assert response.meta['language'] == 'eng'
         assert response.meta['title'] == 'Access to Information Act'
-        assert response.meta['act_date'] == '20150423'
-        assert 'html_link' not in response.meta
-        assert response.url == str('http://laws-lois.justice.gc.ca/eng/acts/A-1/FullText.html')
-        assert response.callback == spider.parse_full_document
-        assert True
+        assert response.meta['long_title'] == 'A long title'
+        assert response.meta['html_link'] == 'http://laws-lois.justice.gc.ca/eng/acts/A-1/FullText.html'
+        assert response.url == str('http://laws-lois.justice.gc.ca/eng/acts/A-1/PITIndex.html')
+        assert response.callback == spider.parse_previous_versions
 
-    @pytest.fixture
-    def full_document(self):
-        body = '<div id="wb-main-in">' + \
-               '<div class="archiveBar"><a href="/eng/ArchiveNote">This Web page has been archived on the Web.</a></div>' + \
-               '<div id="wb-cont" class="docContents">' + \
-               '<section><div class="wet-boew-texthighlight">' + \
-               '<div class="info">Version of document from 2015-04-23 to 2015-05-11:</div>' + \
-               '<section class="intro"><header><h1 class="Title-of-Act">Access to Information Act</h1>' \
-               '<p class="ChapterNumber"><abbr title="Revised Statutes of Canada">R.S.C.</abbr>, 1985, c. A-1</p></header>' \
-               '<p class="LongTitle" id="id-lt">An Act to extend the present laws of Canada that provide access to information under the control of the Government of Canada</p>' \
-               '</section></div></section></div></div></div>'
-        meta = {
-            'code': 'A-1',
-            'language': 'eng',
-            'title': 'Access to Information Act',
-            'act_date': '20150423'
-        }
-        request = Mock()
-        request.meta = meta
-        return HtmlResponse(str('http://laws-lois.justice.gc.ca/eng/acts/A-1/20150423/P1TT3xt3.html'), body=str(body), request=request)
-
-    def test_parse_full_document_with_date(self, spider, full_document):
-        items = [x for x in spider.parse_full_document(full_document)]
-        assert len(items) == 1
-        item = items[0]
-        assert item['code'] == ['A-1']
-        assert item['short_title'] == ['Access to Information Act']
-        assert item['language'] == ['eng']
-        assert item['long_title'] == ['An Act to extend the present laws of Canada that provide access to information under the control of the Government of Canada']
-        assert item['act_date'] == ['20150423']
-        assert len(item['body'][0]) == 478
-
-    def test_parse_full_document_without_date(self, spider, full_document):
-        del full_document.request.meta['act_date']
-        items = [x for x in spider.parse_full_document(full_document)]
-        assert len(items) == 1
-        item = items[0]
-        assert item['code'] == ['A-1']
-        assert item['short_title'] == ['Access to Information Act']
-        assert item['language'] == ['eng']
-        assert item['long_title'] == ['An Act to extend the present laws of Canada that provide access to information under the control of the Government of Canada']
-        assert item['act_date'] == ['20150423']
-        assert len(item['body'][0]) == 478
+    def test_parse_xml_document_without_previous_versions(self, spider, xml_document):
+        response = [x for x in spider.parse_xml_document(xml_document)]
+        assert len(response) == 1
+        response = response[0]
+        assert response['code'] == ['A-1']
+        assert response['short_title'] == ['Access to Information Act']
+        assert response['long_title'] == ['A long title']
+        assert response['act_date'] == ['20150423']
+        assert response['url'] == ['http://laws-lois.justice.gc.ca/eng/acts/A-1/FullText.html']
+        assert response['language'] == ['eng']
