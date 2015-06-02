@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from lawscraper.lawscraper.spiders.canada_law import CanadaLawSpider
 from scrapy.http.response.xml import XmlResponse
@@ -53,17 +54,40 @@ class TestCanadaLawSpider(object):
         request.meta = meta
         return HtmlResponse(str('http://laws-lois.justice.gc.ca/eng/acts/A-1/index.html'), body=str(body), request=request)
 
-    def test_parse_toc_with_previous_version(self, spider, toc_response_with_previous_version):
-        response = [x for x in spider.parse_toc(toc_response_with_previous_version)]
-        assert len(response) == 1
-        response = response[0]
-        assert response.meta['code'] == 'A-1'
-        assert response.meta['language'] == 'eng'
-        assert response.meta['title'] == 'Access to Information Act'
-        assert response.meta['html_link'] == 'http://laws-lois.justice.gc.ca/eng/acts/A-1/FullText.html'
-        assert response.meta['previous_versions'] == 'http://laws-lois.justice.gc.ca/eng/acts/A-1/PITIndex.html'
-        assert response.url == str('http://laws-lois.justice.gc.ca/eng/XML/A-1.xml')
-        assert response.callback == spider.parse_xml_document
+    @pytest.fixture
+    def toc_response_with_previous_version_french(self):
+        body = "<header><h1 id='wb-cont' class='HeadTitle'>Access to Information Act</h1>" + \
+               "<div id='printAll'><p id='FullDoc'>Full Document</p><ul><li><a href='FullText.html'>HTML</a></li>" \
+               "<li><a href='/eng/XML/A-1.xml'>XML</a><span class='fileSize'>[240 KB]</span></li>" \
+               "<li><a href='/PDF/A-1.pdf'>PDF</a><span class='fileSize'>[341 KB]</span></li></ul></div>" \
+               "<div class='info'><p id='assentedDate'>Act current to 2015-05-11 and last amended on 2015-04-23. " \
+               "<a href='PITIndex.html'>Versions antérieures</a></p></div>" \
+               "<div class='tocNotes'>Notes :<ul><li>See coming into force provision and notes, where applicable.</li>" \
+               "<li>Shaded provisions are not in force. " \
+               "<a href='/eng/FAQ/#g10'>Help</a></li></ul></div><div class='lineSeparator goldLineTop'></div>" \
+               "</header>"
+        meta = {
+            'code': 'A-1',
+            'language': 'eng',
+            'title': 'Access to Information Act'
+        }
+        request = Mock()
+        request.meta = meta
+        return HtmlResponse(str('http://laws-lois.justice.gc.ca/eng/acts/A-1/index.html'), body=body.encode('utf-8'), request=request)
+
+    def test_parse_toc_with_previous_version(self, spider, toc_response_with_previous_version, toc_response_with_previous_version_french):
+        english_response = [x for x in spider.parse_toc(toc_response_with_previous_version)]
+        french_response = [x for x in spider.parse_toc(toc_response_with_previous_version_french)]
+        for response in [english_response, french_response]:
+            assert len(response) == 1
+            response = response[0]
+            assert response.meta['code'] == 'A-1'
+            assert response.meta['language'] == 'eng'
+            assert response.meta['title'] == 'Access to Information Act'
+            assert response.meta['html_link'] == 'http://laws-lois.justice.gc.ca/eng/acts/A-1/FullText.html'
+            assert response.meta['previous_versions'] == 'http://laws-lois.justice.gc.ca/eng/acts/A-1/PITIndex.html'
+            assert response.url == str('http://laws-lois.justice.gc.ca/eng/XML/A-1.xml')
+            assert response.callback == spider.parse_xml_document
 
     @pytest.fixture
     def toc_response_without_previous_version(self):

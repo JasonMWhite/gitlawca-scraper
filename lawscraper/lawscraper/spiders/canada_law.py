@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import scrapy
 from urlparse import urljoin
@@ -22,7 +23,7 @@ class CanadaLawSpider(scrapy.Spider):
             yield scrapy.Request(path, self.parse_toc, meta={'code': code, 'language': language, 'title': title})
 
     def parse_toc(self, response):
-        previous_version_link = response.xpath("//p[@id='assentedDate']/a[text()='Previous Versions']/@href").extract()
+        previous_version_link = response.xpath("//p[@id='assentedDate']/a[text()='Previous Versions' or text()='Versions antérieures']/@href").extract()
         html_link = response.xpath("//div[@id='printAll']//a[text()='HTML']/@href").extract()
         xml_link = response.xpath("//div[@id='printAll']//a[text()='XML']/@href").extract()
 
