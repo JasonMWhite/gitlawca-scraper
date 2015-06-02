@@ -10,7 +10,7 @@ Base = declarative_base() #pylint: disable=invalid-name
 
 class Act(Base):
     __tablename__ = 'acts'
-    id = Column(Integer, primary_key=True), #pylint: disable=C0103
+    id = Column(Integer, primary_key=True) #pylint: disable=C0103
     code = Column(String(50))
     short_title = Column(String(65000))
     long_title = Column(String(65000))

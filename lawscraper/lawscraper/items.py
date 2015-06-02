@@ -7,5 +7,5 @@ class ActItem(Item):
     short_title = Field()
     long_title = Field()
     act_date = Field()
-    body = Field()
+    url = Field()
     language = Field()
