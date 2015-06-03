@@ -25,7 +25,7 @@ target_metadata = None
 def construct_engine_url():
     from os import path, sys
     sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-    from app.config import config
+    from gitlawca.config import config
     db = config('database')
     if db['password']:
         return 'mysql://{0}:{1}@{2}/{3}'.format(db['username'], db['password'], db['host'], db['database'])
