@@ -6,7 +6,7 @@ dependencies:
   override:
     - pip install -r requirements.txt
     - cp config.yml.example config.yml
-    - pylint lawscraper scrape.py -rn
+    - pylint lawscraper app -rn
 
 database:
   override:
