@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from lawscraper.lawscraper.spiders.canada_law import CanadaLawSpider
+from gitlawca.scraper.spiders.canada_law import CanadaLawSpider
 from scrapy.http.response.xml import XmlResponse
 from scrapy.http.response.html import HtmlResponse
 import pytest

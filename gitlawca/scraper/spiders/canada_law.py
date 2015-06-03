@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 import scrapy
 from urlparse import urljoin
-from lawscraper.lawscraper.items import ActItem
+from gitlawca.scraper.items import ActItem
 from scrapy.contrib.loader import ItemLoader
 
 

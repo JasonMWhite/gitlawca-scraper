@@ -8,14 +8,14 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
 
-BOT_NAME = 'lawscraper'
+BOT_NAME = 'gitlaw-scraper'
 
-SPIDER_MODULES = ['lawscraper.spiders']
-NEWSPIDER_MODULE = 'lawscraper.spiders'
+SPIDER_MODULES = ['scraper.spiders']
+NEWSPIDER_MODULE = 'scraper.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'lawscraper (+http://www.yourdomain.com)'
 
 ITEM_PIPELINES = {
-    'lawscraper.lawscraper.pipelines.LawscraperPipeline': 100
+    'gitlawca.scraper.pipelines.LawscraperPipeline': 100
 }
