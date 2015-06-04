@@ -42,12 +42,19 @@ class Downloader(object):
             print 'Creating folder to store files'
             os.makedirs(os.path.dirname(filename))
 
-        text = urllib2.urlopen(act.url)
-        print 'Downloading file from {}'.format(act.url)
-        with open(filename, 'w') as file:
-            file.write(text.read())
-        print 'Saved file to {}'.format(filename)
-
+        try:
+            text = urllib2.urlopen(act.url)
+            print 'Downloading file from {}'.format(act.url)
+            with open(filename, 'w') as file:
+                file.write(text.read())
+            print 'Saved file to {}'.format(filename)
+        except urllib2.HTTPError:
+            #TODO: don't use sessions this way
+            session = connect()()
+            session.add(act)
+            act.error_downloading = True
+            session.commit()
+            session.close()
 
 d = Downloader()
 d.start_download()

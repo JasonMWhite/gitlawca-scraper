@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from gitlawca.config import config
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Boolean
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -27,3 +27,4 @@ class Act(Base):
     act_date = Column(String(10))
     language = Column(String(10))
     url = Column(String(1000))
+    error_downloading = Column(Boolean)
