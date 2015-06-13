@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 
 Base = declarative_base() #pylint: disable=invalid-name
 
-
+#pylint: disable=W0232
 def connect():
     creds = config('database')
     login = '{}:{}'.format(creds['username'], creds['password']) if creds['password'] else '{}'.format(creds['username'])
