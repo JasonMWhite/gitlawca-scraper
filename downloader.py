@@ -38,6 +38,7 @@ class Downloader(object):
         return os.path.join(self.root_folder, 'canada', 'acts', act.code, act.language, act.act_date + '.html')
 
     def download_file(self, act, filename):
+        #TODO: read whole file before writing
         if not os.path.exists(os.path.dirname(filename)):
             print 'Creating folder to store files'
             os.makedirs(os.path.dirname(filename))
