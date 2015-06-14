@@ -9,3 +9,4 @@ alembic
 mysql-python
 pylint
 pyyaml
+gitpython
