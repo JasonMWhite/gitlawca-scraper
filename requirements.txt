@@ -10,3 +10,4 @@ mysql-python
 pylint
 pyyaml
 gitpython
+pygithub

@@ -4,7 +4,7 @@ import getopt
 from gitlawca.database import reset_database
 from gitlawca.scrape import run as run_scraper
 from gitlawca.downloader import start as run_downloader
-from gitlawca.github import reset_git_repo
+from gitlawca.gitlawhub import reset_git_repo
 from gitlawca.config import config
 from git import Repo
 
