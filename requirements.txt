@@ -11,3 +11,4 @@ pylint
 pyyaml
 gitpython
 pygithub
+html2text

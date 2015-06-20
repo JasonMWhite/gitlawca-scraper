@@ -6,6 +6,7 @@ from gitlawca.gitlawhub import ActBranch
 from git import Repo
 import os.path
 import urllib2
+from html2text import html2text
 
 #pylint: disable=W0511
 
@@ -14,7 +15,7 @@ download_config = config('download')
 
 def act_file_location(act):
     act_prefix = act.code.split('-')[0]
-    return os.path.join('canada', 'acts', act_prefix, act.code, act.language, act.act_date + '.html')
+    return os.path.join('canada', 'acts', act_prefix, act.code, act.language, act.act_date + '.md')
 
 
 def determine_next_commit_date(session):
@@ -60,8 +61,11 @@ def start():
                 if text is None:
                     continue
 
+                text = unicode(text, 'utf8')
+                text = html2text(text)
+
                 with open(filename, 'w') as f:
-                    f.write(text)
+                    f.write(text.encode('utf8', 'replace'))
                 repo.index.add([filename])
 
             repo.index.commit("Acts modified on {}".format(next_date_to_download))
