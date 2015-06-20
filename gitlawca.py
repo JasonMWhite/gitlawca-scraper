@@ -3,6 +3,7 @@ import sys
 import getopt
 from gitlawca.database import reset_database
 from gitlawca.scrape import run as run_scraper
+from gitlawca.github import reset_git_repo
 
 
 def usage():
@@ -21,10 +22,10 @@ def reset(arg):
     if arg == 'database':
         reset_database()
     elif arg == 'github':
-        print 'Called "reset" with level of {}'.format(arg)
+        reset_git_repo()
     elif arg == 'all':
         reset_database()
-        print 'Called "reset" with level of {}'.format(arg)
+        reset_git_repo()
     else:
         usage()
         sys.exit()
