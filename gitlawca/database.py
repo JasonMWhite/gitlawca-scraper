@@ -21,6 +21,8 @@ def connect():
 def reset_database():
     session = connect()()
     session.execute('TRUNCATE TABLE acts;')
+    session.commit()
+    session.close()
     print 'Database truncated. The scraper must be run to restore the database'
 
 
