@@ -23,9 +23,22 @@ def deemphasize_headers(doc):
     return doc
 
 
+def remove_marginal_notes(doc):
+    for tag in doc.findAll(lambda tag: tag.name == 'span' and tag.get('class') == 'wb-invisible'):
+        tag.decompose()
+    return doc
+
+
+rules = [
+    strip_versioning,
+    deemphasize_headers,
+    remove_marginal_notes
+]
+
+
 def reformat_document(doc):
-    doc = strip_versioning(doc)
-    doc = deemphasize_headers(doc)
+    for rule in rules:
+        doc = rule(doc)
     return doc
 
 
