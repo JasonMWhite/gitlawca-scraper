@@ -4,7 +4,9 @@ database:
   database: gitlawca
   username: admin
   password: password
-download_folder: ./data
+download:
+  folder: ./data
+  limit: 50
 github:
   token: ''
   user: ''
