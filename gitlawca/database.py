@@ -18,6 +18,12 @@ def connect():
     return session
 
 
+def reset_database():
+    session = connect()()
+    session.execute('TRUNCATE TABLE acts;')
+    print 'Database truncated. The scraper must be run to restore the database'
+
+
 class Act(Base):
     __tablename__ = 'acts'
     id = Column(Integer, primary_key=True) #pylint: disable=C0103
