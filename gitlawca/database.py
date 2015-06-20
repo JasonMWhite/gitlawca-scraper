@@ -34,3 +34,4 @@ class Act(Base):
     language = Column(String(10))
     url = Column(String(1000))
     error_downloading = Column(Boolean)
+    git_commit = Column(String(40))

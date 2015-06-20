@@ -1,24 +1,17 @@
 from __future__ import unicode_literals
-from downloader import Downloader
-from gitlawca.database import Act
+
 import pytest
+from gitlawca import downloader
+from gitlawca.database import Act
 
-#pylint: disable=R0201
-class TestDownloader(object):
+#pylint: disable=W0621
+@pytest.fixture
+def act():
+    output = Act()
+    output.code = 'A-1'
+    output.act_date = '20150101'
+    output.language = 'eng'
+    return output
 
-    @pytest.fixture
-    def dl(self):
-        dl = Downloader()
-        dl.root_folder = '~/data'
-        return dl
-
-    @pytest.fixture
-    def act(self):
-        act = Act()
-        act.code = 'A-1'
-        act.act_date = '20150101'
-        act.language = 'eng'
-        return act
-
-    def test_act_file_location(self, dl, act):
-        assert dl.act_file_location(act) == '~/data/canada/acts/A-1/eng/20150101.html'
+def test_act_file_location(act):
+    assert downloader.act_file_location(act) == 'canada/acts/A/A-1/eng/20150101.html'
