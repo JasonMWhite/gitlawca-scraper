@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from gitlawca.config import config
 from gitlawca.database import connect, Act
 from sqlalchemy import func
-from gitlawca.github import ActBranch
+from gitlawca.gitlawhub import ActBranch
 from git import Repo
 import os.path
 import urllib2
