@@ -54,7 +54,7 @@ def start():
 
                 try:
                     text = doc.read()
-                except:
+                except urllib2.URLError:
                     act.error_downloading = True
 
                 if text is None:
