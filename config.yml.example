@@ -4,4 +4,9 @@ database:
   database: gitlawca
   username: admin
   password: password
-download_folder: ~/data
+download_folder: ./data
+github:
+  token: ''
+  user: ''
+  repo: ''
+  root_sha: ''
