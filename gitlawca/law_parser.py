@@ -6,9 +6,21 @@ from BeautifulSoup import BeautifulSoup
 def parse_raw_document(data):
     doc = BeautifulSoup(data)
     output = doc.find(lambda tag: tag.get('id') == 'wb-cont')
-    output = unicode(output.prettify(), 'utf8')
     return output
 
 
-def prettify_to_markdown(data):
-    return html2text(data)
+def strip_versioning(doc):
+    versioning = doc.find(lambda tag: tag.get('class') == 'info')
+    if versioning is not None and 'Version of document' in versioning.text:
+        versioning.decompose()
+    return doc
+
+
+def reformat_document(doc):
+    return strip_versioning(doc)
+
+
+def prettify_to_markdown(doc):
+    doc = reformat_document(doc)
+    doc = unicode(doc.prettify(), 'utf8')
+    return html2text(doc)

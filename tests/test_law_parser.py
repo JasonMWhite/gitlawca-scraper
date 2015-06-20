@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 import pytest
-from gitlawca.law_parser import parse_raw_document
+from gitlawca.law_parser import parse_raw_document, reformat_document
 
 #pylint: disable=W0621
 @pytest.fixture
@@ -11,4 +11,7 @@ def c41():
 
 def test_parser(c41):
     output = parse_raw_document(c41)
-    assert len(output) > 1000
+    assert 'Version of document' in output.prettify()[0:200]
+
+    reformatted = reformat_document(output)
+    assert 'Version of document' not in reformatted.prettify()[0:200]
