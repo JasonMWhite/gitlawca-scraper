@@ -6,7 +6,7 @@ from gitlawca.gitlawhub import ActBranch
 from git import Repo
 import os.path
 import urllib2
-from html2text import html2text
+from gitlawca.law_parser import parse_raw_document, prettify_to_markdown
 
 #pylint: disable=W0511
 
@@ -62,7 +62,8 @@ def start():
                     continue
 
                 text = unicode(text, 'utf8')
-                text = html2text(text)
+                text = parse_raw_document(text)
+                text = prettify_to_markdown(text)
 
                 with open(filename, 'w') as f:
                     f.write(text.encode('utf8', 'replace'))
