@@ -50,8 +50,15 @@ def start():
 
                 doc = urllib2.urlopen(act.url)
                 print 'Downloading file from {}'.format(act.url)
-                #TODO: handle errors during read by setting error_downloading = True
-                text = doc.read()
+                text = None
+
+                try:
+                    text = doc.read()
+                except urllib2.URLError:
+                    act.error_downloading = True
+
+                if text is None:
+                    continue
 
                 with open(filename, 'w') as f:
                     f.write(text)
