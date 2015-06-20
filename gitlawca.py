@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 import sys
 import getopt
+from gitlawca.database import reset_database
 
 
 def usage():
@@ -16,7 +17,12 @@ def usage():
 
 
 def reset(arg):
-    if arg in ('database', 'github', 'all'):
+    if arg == 'database':
+        reset_database()
+    elif arg == 'github':
+        print 'Called "reset" with level of {}'.format(arg)
+    elif arg == 'all':
+        reset_database()
         print 'Called "reset" with level of {}'.format(arg)
     else:
         usage()
