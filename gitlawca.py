@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 import sys
 import getopt
 from gitlawca.database import reset_database
+from gitlawca.scrape import run as run_scraper
 
 
 def usage():
@@ -30,7 +31,7 @@ def reset(arg):
 
 
 def scrape():
-    print 'Called "scrape"'
+    run_scraper()
 
 
 def download():

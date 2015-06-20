@@ -6,7 +6,7 @@ dependencies:
   override:
     - pip install -r requirements.txt
     - cp config.yml.example config.yml
-    - pylint gitlawca tests scrape.py gitlawca.py -rn
+    - pylint gitlawca tests gitlawca.py -rn
 
 database:
   override:
