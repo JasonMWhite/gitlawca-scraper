@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from github import Github, GithubException
 from gitlawca.config import config
+from gitlawca.database import connect
 
 
 def reset_git_repo(repo, root_sha):
@@ -8,8 +9,12 @@ def reset_git_repo(repo, root_sha):
     repo.heads.master.checkout()
     repo.git.reset('--hard', root_sha)
     repo.remote('origin').push(force=True)
-    print 'Github repository reset to {}'.format(root_sha)
 
+    session = connect()()
+    session.execute('UPDATE acts SET git_commit=NULL;')
+    session.commit()
+    session.close()
+    print 'Github repository reset to {}'.format(root_sha)
 
 class ActBranch(object):
 
