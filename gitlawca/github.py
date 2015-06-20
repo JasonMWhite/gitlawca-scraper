@@ -1,11 +1,7 @@
 from __future__ import unicode_literals
-from gitlawca.config import config
-from git import Repo
 
 
-def reset_git_repo():
-    root_sha = config('github')['root_sha']
-    repo = Repo(config('download_folder'))
+def reset_git_repo(repo, root_sha):
     repo.git.reset('--hard')
     repo.heads.master.checkout()
     repo.git.reset('--hard', root_sha)
@@ -22,6 +18,7 @@ class ActBranch(object):
     def __enter__(self):
         # Force hard reset and checkout master branch, just in case we weren't there
         self.repo.git.reset('--hard')
+        self.repo.git.clean('-f', '-d')
         self.repo.heads.master.checkout()
 
         branch = self.repo.create_head(self.branch_name)
@@ -32,3 +29,7 @@ class ActBranch(object):
         if value is None:
             self.repo.remote('origin').push(self.branch_name)
             return True
+        else:
+            self.repo.git.reset('--hard')
+            self.repo.git.clean('-f', '-d')
+            self.repo.heads.master.checkout()

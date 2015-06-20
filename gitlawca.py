@@ -3,7 +3,10 @@ import sys
 import getopt
 from gitlawca.database import reset_database
 from gitlawca.scrape import run as run_scraper
+from gitlawca.downloader import start as run_downloader
 from gitlawca.github import reset_git_repo
+from gitlawca.config import config
+from git import Repo
 
 
 def usage():
@@ -19,13 +22,15 @@ def usage():
 
 
 def reset(arg):
+    repo = Repo(config('download')['folder'])
+    root_sha = config('github')['root_sha']
     if arg == 'database':
         reset_database()
     elif arg == 'github':
-        reset_git_repo()
+        reset_git_repo(repo, root_sha)
     elif arg == 'all':
         reset_database()
-        reset_git_repo()
+        reset_git_repo(repo, root_sha)
     else:
         usage()
         sys.exit()
@@ -36,7 +41,7 @@ def scrape():
 
 
 def download():
-    print 'Called "download"'
+    run_downloader()
 
 
 def main(argv):
