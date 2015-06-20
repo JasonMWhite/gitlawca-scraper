@@ -14,4 +14,4 @@ def act():
     return output
 
 def test_act_file_location(act):
-    assert downloader.act_file_location(act) == 'canada/acts/A/A-1/eng/20150101.html'
+    assert downloader.act_file_location(act) == 'canada/acts/A/A-1/eng/20150101.md'
