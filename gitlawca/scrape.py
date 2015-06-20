@@ -5,7 +5,7 @@ from scrapy.crawler import Crawler
 from scrapy.settings import Settings
 
 #pylint: disable=no-member
-def spider_closing(_):
+def spider_closing():
     """Activates on spider closed signal"""
     log.msg("Closing reactor", level=log.INFO)
     reactor.stop()
