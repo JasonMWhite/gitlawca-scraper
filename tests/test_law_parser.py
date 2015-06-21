@@ -52,3 +52,14 @@ def test_parser_deemphasizes_headers(c41, pretty):
 def test_parser_removes_marginal_notes(c41, pretty):
     assert len(c41.findAll(lambda tag: tag.name == 'span' and tag.get('class') == ['wb-invisible'])) > 0
     assert len(pretty.findAll(lambda tag: tag.name == 'span' and tag.get('class') == ['wb-invisible'])) == 0
+
+
+def test_parser_removes_provision_lists(c41, pretty):
+    provision_list = c41.ul
+    assert provision_list is not None
+    assert '2.' == provision_list.text[0:2]
+
+    list_entry = pretty.find(lambda tag: tag.name == 'p' and tag.get('class') == ['Subsection'])
+    assert list_entry is not None
+    assert '2.' == list_entry.text[0:2]
+    assert pretty.find('ul').get('class') == ['ProvisionList']

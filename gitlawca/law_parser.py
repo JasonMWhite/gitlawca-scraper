@@ -29,10 +29,35 @@ def remove_marginal_notes(doc):
     return doc
 
 
+def remove_provision_lists(doc):
+    main_node = doc.find(lambda tag: tag.name == 'div' and tag.get('class') == ['wet-boew-texthighlight'])
+    if main_node is None:
+        return doc
+
+    nodes = []
+
+    content_nodes = [x for x in main_node.children]
+    for child in content_nodes:
+        if child.name != 'ul':
+            nodes.append(child.extract())
+        else:
+            for list_entry in [x for x in child.children]:
+                if list_entry.name == 'li':
+                    for list_child in [x for x in list_entry.children]:
+                        nodes.append(list_child.extract())
+            child.decompose()
+
+    for node in nodes:
+        main_node.append(node)
+
+    return doc
+
+
 rules = [
     strip_versioning,
     deemphasize_headers,
-    remove_marginal_notes
+    remove_marginal_notes,
+    remove_provision_lists
 ]
 
 
