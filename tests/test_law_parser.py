@@ -4,7 +4,7 @@ from gitlawca.law_parser import parse_raw_document, reformat_document, reformatt
 from bs4 import BeautifulSoup
 
 #pylint: disable=W0621
-@pytest.fixture(params=['tests/fixtures/C-41.5-eng.html', 'tests/fixtures/C-41.5-eng.html'])
+@pytest.fixture(params=['tests/fixtures/C-41.5-eng.html', 'tests/fixtures/C-41.5-fra.html'])
 def c41(request):
     with open(request.param) as raw_file:
         text = raw_file.read()
@@ -76,3 +76,11 @@ def test_parser_reformats_definitions(c41, pretty):
     pretty_definitions = pretty.find(lambda tag: tag.name == 'dl' and tag.get('class') == ['Definition'])
     first_pretty_definition = pretty_definitions.dt
     assert len(first_pretty_definition.find_all('p')) == 1
+
+
+def test_parser_reformats_links(c41, pretty):
+    link = c41.find(lambda tag: tag.name == 'a' and tag.get('href') is not None)
+    assert link.get('href') == '/eng/acts/C-41.5' or link.get('href') == '/fra/lois/C-41.5'
+
+    pretty_link = pretty.find(lambda tag: tag.name == 'a' and tag.get('href') is not None)
+    assert pretty_link['href'] == '/canada/eng/acts/C/C-41.5.md' or pretty_link['href'] == '/canada/fra/lois/C/C-41.5.md'
