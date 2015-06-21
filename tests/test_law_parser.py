@@ -84,3 +84,11 @@ def test_parser_reformats_links(c41, pretty):
 
     pretty_link = pretty.find(lambda tag: tag.name == 'a' and tag.get('href') is not None)
     assert pretty_link['href'] == '/canada/eng/acts/C/C-41.5.md' or pretty_link['href'] == '/canada/fra/lois/C/C-41.5.md'
+
+
+def test_parser_reformats_multipart_headers(c41, pretty):
+    header = c41.find(lambda tag: tag.name == 'h1' and tag.get('id') == 'h-3')
+    assert len(header.find_all('span')) == 2
+
+    pretty_header = pretty.find(lambda tag: tag.name == 'h2' and tag.get('id') == 'h-3')
+    assert len(pretty_header.find_all('span')) == 1
