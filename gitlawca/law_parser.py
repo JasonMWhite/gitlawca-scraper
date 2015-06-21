@@ -50,11 +50,40 @@ def remove_provision_lists(doc):
     return new_doc
 
 
+def reformat_definitions(doc):
+    definitions = doc.find(lambda tag: tag.name == 'dl' and tag.get('class') == ['Definition'])
+    if definitions is None:
+        return doc
+
+    def extract_term_nodes():
+        for child in definitions.children:
+            if child.name == 'dt':
+                yield child
+
+    for term_node in extract_term_nodes():
+        terms = []
+        for para in term_node.children:
+            if para.span is None:
+                continue
+            if para.span.get('class') == ['DefinedTerm']:
+                terms.append('**{}**'.format(para.span.text))
+            elif para.span.get('class') == ['DefinedTermLink']:
+                terms.append('_{}_'.format(para.span.text))
+
+        term_node.clear()
+        if len(terms) > 0:
+            new_defn = doc.new_tag('p')
+            new_defn.string = ' - '.join(terms)
+            term_node.append(new_defn)
+    return doc
+
+
 rules = [
     strip_versioning,
     deemphasize_headers,
     remove_marginal_notes,
-    remove_provision_lists
+    remove_provision_lists,
+    reformat_definitions
 ]
 
 
