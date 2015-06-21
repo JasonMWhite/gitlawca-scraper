@@ -15,7 +15,7 @@ download_config = config('download')
 
 def act_file_location(act):
     act_prefix = act.code.split('-')[0]
-    return os.path.join('canada', 'acts', act.language, act_prefix, act.code + '.md')
+    return os.path.join('canada', act.language, 'acts', act_prefix, act.code + '.md')
 
 
 def determine_next_commit_date(session):
