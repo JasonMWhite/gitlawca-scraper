@@ -1,7 +1,7 @@
 scrapy
 ipdb
 service_identity
-beautifulsoup
+beautifulsoup4
 pytest
 mock
 sqlalchemy
