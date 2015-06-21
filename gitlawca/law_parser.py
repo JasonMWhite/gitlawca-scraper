@@ -29,21 +29,10 @@ def remove_marginal_notes(doc):
     return doc
 
 
-def fix_bold_numbering(doc):
-    for tag in doc(lambda tag: tag.get('class') == ['sectionLabel'] and tag.parent.parent.name == 'strong'):
-        strong_tag = tag.parent.parent
-        number = tag.text.strip()
-        new_strong_tag = doc.new_tag('strong')
-        new_strong_tag.string = number
-        strong_tag.replaceWith(new_strong_tag)
-    return doc
-
-
 rules = [
     strip_versioning,
     deemphasize_headers,
-    remove_marginal_notes,
-    fix_bold_numbering
+    remove_marginal_notes
 ]
 
 
