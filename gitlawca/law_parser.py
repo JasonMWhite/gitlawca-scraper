@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 from html2text import html2text
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 
 def parse_raw_document(data):
@@ -10,7 +10,7 @@ def parse_raw_document(data):
 
 
 def strip_versioning(doc):
-    versioning = doc.find(lambda tag: tag.get('class') == 'info')
+    versioning = doc.find(lambda tag: tag.get('class') == ['info'])
     if versioning is not None and ('document' in versioning.text):
         versioning.decompose()
     return doc
@@ -24,15 +24,26 @@ def deemphasize_headers(doc):
 
 
 def remove_marginal_notes(doc):
-    for tag in doc.findAll(lambda tag: tag.name == 'span' and tag.get('class') == 'wb-invisible'):
+    for tag in doc.findAll(lambda tag: tag.name == 'span' and tag.get('class') == ['wb-invisible']):
         tag.decompose()
+    return doc
+
+
+def fix_bold_numbering(doc):
+    for tag in doc(lambda tag: tag.get('class') == ['sectionLabel'] and tag.parent.parent.name == 'strong'):
+        strong_tag = tag.parent.parent
+        number = tag.text.strip()
+        new_strong_tag = doc.new_tag('strong')
+        new_strong_tag.string = number
+        strong_tag.replaceWith(new_strong_tag)
     return doc
 
 
 rules = [
     strip_versioning,
     deemphasize_headers,
-    remove_marginal_notes
+    remove_marginal_notes,
+    fix_bold_numbering
 ]
 
 
@@ -42,7 +53,12 @@ def reformat_document(doc):
     return doc
 
 
-def prettify_to_markdown(doc):
+def reformatted_to_markdown(doc):
+    return html2text(unicode(str(doc), 'utf8'))
+
+
+def prepare_markdown(doc):
+    doc = parse_raw_document(doc)
     doc = reformat_document(doc)
-    doc = unicode(doc.prettify(), 'utf8')
-    return html2text(doc)
+    doc = reformatted_to_markdown(doc)
+    return doc
