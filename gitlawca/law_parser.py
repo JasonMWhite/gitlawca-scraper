@@ -78,12 +78,27 @@ def reformat_definitions(doc):
     return doc
 
 
+def repoint_links(doc):
+    for link in doc.find_all(lambda tag: tag.name == 'a' and tag.get('href', '').startswith('/')):
+        link_parts = link['href'].split('/')[1:]
+        if len(link_parts) < 3:
+            continue
+
+        link_parts.insert(0, 'canada')
+        link_parts.insert(3, link_parts[3].split('-')[0])
+        link_parts[-1] = '{}.md'.format(link_parts[-1])
+
+        link['href'] = '/' + '/'.join(link_parts)
+    return doc
+
+
 rules = [
     strip_versioning,
     deemphasize_headers,
     remove_marginal_notes,
     remove_provision_lists,
-    reformat_definitions
+    reformat_definitions,
+    repoint_links
 ]
 
 
