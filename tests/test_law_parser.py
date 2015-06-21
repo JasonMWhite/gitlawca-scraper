@@ -4,7 +4,7 @@ from gitlawca.law_parser import parse_raw_document, reformat_document, reformatt
 from bs4 import BeautifulSoup
 
 #pylint: disable=W0621
-@pytest.fixture(params=['tests/fixtures/C-41.5-eng.html', 'tests/fixtures/C-41.5-fra.html'])
+@pytest.fixture(params=['tests/fixtures/C-41.5-eng.html', 'tests/fixtures/C-41.5-eng.html'])
 def c41(request):
     with open(request.param) as raw_file:
         text = raw_file.read()
@@ -63,3 +63,16 @@ def test_parser_removes_provision_lists(c41, pretty):
     assert list_entry is not None
     assert '2.' == list_entry.text[0:2]
     assert pretty.find('ul').get('class') == ['ProvisionList']
+
+    with open('test.html', 'w') as f:
+        f.write(str(pretty))
+
+
+def test_parser_reformats_definitions(c41, pretty):
+    definitions = c41.find(lambda tag: tag.name == 'dl' and tag.get('class') == ['Definition'])
+    first_definition = definitions.dt
+    assert len(first_definition.find_all(lambda tag: tag.name == 'p' and tag.get('class') == ['MarginalNoteDefinedTerm'])) == 2
+
+    pretty_definitions = pretty.find(lambda tag: tag.name == 'dl' and tag.get('class') == ['Definition'])
+    first_pretty_definition = pretty_definitions.dt
+    assert len(first_pretty_definition.find_all('p')) == 1
