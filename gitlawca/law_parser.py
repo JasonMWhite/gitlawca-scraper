@@ -28,29 +28,26 @@ def remove_marginal_notes(doc):
         tag.decompose()
     return doc
 
-
 def remove_provision_lists(doc):
     main_node = doc.find(lambda tag: tag.name == 'div' and tag.get('class') == ['wet-boew-texthighlight'])
     if main_node is None:
         return doc
 
-    nodes = []
+    def parse_provision_lists(main_node):
+        for content_node in [x for x in main_node.children]:
+            if content_node.name != 'ul':
+                yield content_node.extract()
+            else:
+                for list_entry in [x for x in content_node.children]:
+                    if list_entry.name == 'li':
+                        for list_child in [x for x in list_entry.children]:
+                            yield list_child.extract()
 
-    content_nodes = [x for x in main_node.children]
-    for child in content_nodes:
-        if child.name != 'ul':
-            nodes.append(child.extract())
-        else:
-            for list_entry in [x for x in child.children]:
-                if list_entry.name == 'li':
-                    for list_child in [x for x in list_entry.children]:
-                        nodes.append(list_child.extract())
-            child.decompose()
+    new_doc = BeautifulSoup()
+    for tag in parse_provision_lists(main_node):
+        new_doc.append(tag)
 
-    for node in nodes:
-        main_node.append(node)
-
-    return doc
+    return new_doc
 
 
 rules = [
