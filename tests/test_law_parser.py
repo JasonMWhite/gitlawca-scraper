@@ -45,6 +45,7 @@ def test_parser_removes_version(c41_text, pretty_text):
 
 def test_parser_deemphasizes_headers(c41, pretty):
     assert len(c41.findAll(lambda tag: tag.name == 'h1' and tag.get('class') != ['Title-of-Act'])) > 0
+    assert len(pretty.findAll(lambda tag: tag.name == 'h1' and tag.get('class') == ['Title-of-Act'])) == 1
     assert len(pretty.findAll(lambda tag: tag.name == 'h1' and tag.get('class') != ['Title-of-Act'])) == 0
 
 

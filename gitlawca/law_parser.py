@@ -17,7 +17,7 @@ def strip_versioning(doc):
 
 
 def deemphasize_headers(doc):
-    headers = doc.findAll(lambda tag: tag.name == 'h1' and tag.get('class') != 'Title-of-Act')
+    headers = doc.findAll(lambda tag: tag.name == 'h1' and tag.get('class') != ['Title-of-Act'])
     for header in headers:
         header.name = 'h2'
     return doc
