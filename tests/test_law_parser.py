@@ -51,9 +51,3 @@ def test_parser_deemphasizes_headers(c41, pretty):
 def test_parser_removes_marginal_notes(c41, pretty):
     assert len(c41.findAll(lambda tag: tag.name == 'span' and tag.get('class') == ['wb-invisible'])) > 0
     assert len(pretty.findAll(lambda tag: tag.name == 'span' and tag.get('class') == ['wb-invisible'])) == 0
-
-
-def test_parser_bolds_numbers_properly(c41, pretty, markdown):
-    assert len(c41.findAll(lambda tag: tag.get('class') == ['sectionLabel'] and tag.parent.parent.name == 'strong')) > 0
-    assert pretty.find(lambda tag: tag.get('class') == ['sectionLabel'] and tag.parent.parent.name == 'strong') is None
-    assert '**1.**' in markdown
