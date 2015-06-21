@@ -92,13 +92,31 @@ def repoint_links(doc):
     return doc
 
 
+def fix_multipart_headers(doc):
+    for child in doc.children:
+        if child.name != 'h2':
+            continue
+
+        spans = []
+        for header_child in [x for x in child.children]:
+            if header_child.name == 'span':
+                spans.append(header_child.extract())
+
+        header_text = [header.text for header in spans]
+        new_header = doc.new_tag('span')
+        new_header.string = ' - '.join(header_text)
+        child.append(new_header)
+    return doc
+
+
 rules = [
     strip_versioning,
     deemphasize_headers,
     remove_marginal_notes,
     remove_provision_lists,
     reformat_definitions,
-    repoint_links
+    repoint_links,
+    fix_multipart_headers
 ]
 
 
