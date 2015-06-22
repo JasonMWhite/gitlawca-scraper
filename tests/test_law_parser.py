@@ -106,6 +106,13 @@ def test_parser_reformats_multipart_headers(c41, pretty):
     assert len(pretty_header2.find_all('span')) == 1
 
 
+def test_parser_multipart_headers_with_spans_and_strings(c41, pretty):
+    header = c41.find(lambda tag: tag.name == 'h6' and 'Authorization to use word' in tag.text)
+    pretty_header = pretty.find(lambda tag: tag.name == 'h6' and 'Authorization to use word' in tag.text)
+    if c41.h1.text == 'Cooperative Energy Act':
+        assert [x for x in header.children][1:] == [x for x in pretty_header.children]
+
+
 def test_parser_fixes_asterisks(c41, pretty):
     assert len(c41.find_all(lambda tag: tag.name == 'sup' and tag.text == '*')) > 0
     assert len(pretty.find_all(lambda tag: tag.name == 'sup' and tag.text == '*')) == 0
