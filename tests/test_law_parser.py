@@ -62,10 +62,7 @@ def test_parser_removes_provision_lists(c41, pretty):
     list_entry = pretty.find(lambda tag: tag.name == 'p' and tag.get('class') == ['Subsection'])
     assert list_entry is not None
     assert '2.' == list_entry.text[0:2]
-    assert pretty.find('ul').get('class') == ['ProvisionList']
-
-    with open('test.html', 'w') as f:
-        f.write(str(pretty))
+    assert pretty.find(lambda tag: tag.name == 'ul' and tag.get('class') == ['ProvisionList']) is None
 
 
 def test_parser_reformats_definitions(c41, pretty):
