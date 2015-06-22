@@ -99,7 +99,7 @@ def repoint_links(doc):
 
 
 def fix_multipart_headers(doc):
-    for header in doc.find_all('h2'):
+    for header in doc.find_all(lambda tag: tag.name in ('h2', 'h3', 'h4', 'h5', 'h6')):
         spans = []
         for header_child in [x for x in header.children]:
             if header_child.name == 'span':
