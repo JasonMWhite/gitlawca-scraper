@@ -93,19 +93,17 @@ def repoint_links(doc):
 
 
 def fix_multipart_headers(doc):
-    for child in doc.children:
-        if child.name != 'h2':
-            continue
-
+    for header in doc.find_all('h2'):
         spans = []
-        for header_child in [x for x in child.children]:
+        for header_child in [x for x in header.children]:
             if header_child.name == 'span':
                 spans.append(header_child.extract())
 
-        header_text = [header.text for header in spans]
-        new_header = doc.new_tag('span')
-        new_header.string = ' - '.join(header_text)
-        child.append(new_header)
+        if len(spans) > 0:
+            header_text = [span.text for span in spans]
+            new_header = doc.new_tag('span')
+            new_header.string = ' - '.join(header_text)
+            header.append(new_header)
     return doc
 
 
