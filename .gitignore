@@ -2,3 +2,5 @@
 *.pyc
 config.yml
 .DS_Store
+test.html
+test.md
