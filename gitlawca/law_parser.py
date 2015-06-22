@@ -36,11 +36,8 @@ def remove_marginal_notes(doc):
     return doc
 
 def remove_provision_lists(doc):
-    def is_subsection(tag):
-        return tag.name == 'p' and tag.get('class') == ['Subsection']
-
     def appropriate_provision(tag):
-        return tag.name == 'ul' and tag.get('class') == ['ProvisionList'] and tag.find_previous_sibling(is_subsection) is None and tag.find_parent(lambda parent: parent.name == 'ul' and parent.get('class') == ['ProvisionList'] and parent.find_previous_sibling(is_subsection) is None) is None
+        return tag.name == 'ul' and tag.get('class') == ['ProvisionList'] and tag.li.p.get('class') in (['Section'], ['Subsection'])
 
     for provision_list in [x for x in doc.find_all(appropriate_provision)]:
         nodes_to_insert = []
