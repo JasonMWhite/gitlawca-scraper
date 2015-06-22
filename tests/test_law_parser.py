@@ -87,11 +87,15 @@ def test_parser_reformats_links(c41, pretty):
 
 
 def test_parser_reformats_multipart_headers(c41, pretty):
-    header = c41.find(lambda tag: tag.name == 'h1' and tag.get('id') == 'h-3')
-    assert len(header.find_all('span')) == 2
+    header1 = c41.find(lambda tag: tag.name == 'h1' and tag.get('id') == 'h-3')
+    assert len(header1.find_all('span')) == 2
+    header2 = c41.find(lambda tag: tag.name == 'h1' and tag.get('id') == 'h-6')
+    assert len(header2.find_all('span')) == 3
 
-    pretty_header = pretty.find(lambda tag: tag.name == 'h2' and tag.get('id') == 'h-3')
-    assert len(pretty_header.find_all('span')) == 1
+    pretty_header1 = pretty.find(lambda tag: tag.name == 'h2' and tag.get('id') == 'h-3')
+    assert len(pretty_header1.find_all('span')) == 1
+    pretty_header2 = pretty.find(lambda tag: tag.name == 'h2' and tag.get('id') == 'h-6')
+    assert len(pretty_header2.find_all('span')) == 1
 
 
 def test_parser_fixes_asterisks(c41, pretty):
