@@ -5,8 +5,10 @@ from bs4 import BeautifulSoup
 
 def parse_raw_document(data):
     doc = BeautifulSoup(data)
-    output = doc.find(lambda tag: tag.get('id') == 'wb-cont')
-    return output
+    content_node = doc.find(lambda tag: tag.get('id') == 'wb-cont')
+    new_doc = BeautifulSoup()
+    new_doc.append(content_node.extract())
+    return new_doc
 
 
 def strip_versioning(doc):
@@ -29,25 +31,44 @@ def remove_marginal_notes(doc):
     return doc
 
 def remove_provision_lists(doc):
-    main_node = doc.find(lambda tag: tag.name == 'div' and tag.get('class') == ['wet-boew-texthighlight'])
-    if main_node is None:
-        return doc
-
-    def parse_provision_lists(main_node):
-        for content_node in [x for x in main_node.children]:
-            if content_node.name != 'ul':
-                yield content_node.extract()
+    # import ipdb
+    for provision_list in [x for x in doc.find_all(lambda tag: tag.name == 'ul' and tag.get('class') == ['ProvisionList'])]:
+        # ipdb.set_trace()
+        nodes_to_insert = []
+        for list_entry in [x for x in provision_list.children]:
+            if list_entry.name == 'li':
+                for list_element in [x for x in list_entry.children]:
+                    nodes_to_insert.append(list_element.extract())
             else:
-                for list_entry in [x for x in content_node.children]:
-                    if list_entry.name == 'li':
-                        for list_child in [x for x in list_entry.children]:
-                            yield list_child.extract()
+                nodes_to_insert.append(list_entry.extract())
 
-    new_doc = BeautifulSoup()
-    for tag in parse_provision_lists(main_node):
-        new_doc.append(tag)
-
-    return new_doc
+        if provision_list.previous_sibling is not None:
+            for node in nodes_to_insert:
+                provision_list.previous_sibling.insert_after(node)
+        else:
+            for i, node in enumerate(nodes_to_insert):
+                provision_list.parent.insert(i, node)
+        provision_list.decompose()
+    # main_node = doc.find(lambda tag: tag.name == 'div' and tag.get('class') == ['wet-boew-texthighlight'])
+    # if main_node is None:
+    #     return doc
+    #
+    # def parse_provision_lists(main_node):
+    #     for content_node in [x for x in main_node.children]:
+    #         if content_node.name != 'ul':
+    #             yield content_node.extract()
+    #         else:
+    #             for list_entry in [x for x in content_node.children]:
+    #                 if list_entry.name == 'li':
+    #                     for list_child in [x for x in list_entry.children]:
+    #                         yield list_child.extract()
+    #
+    # new_doc = BeautifulSoup()
+    # for tag in parse_provision_lists(main_node):
+    #     new_doc.append(tag)
+    #
+    # return new_doc
+    return doc
 
 
 def reformat_definitions(doc):
