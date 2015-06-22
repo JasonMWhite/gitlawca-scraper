@@ -9,11 +9,11 @@ from gitlawca.law_parser import parse_raw_document, reformat_document, reformatt
 from gitlawca.config import config
 from git import Repo
 
-
+#pylint: disable=R0912
 def usage():
     print 'gitlawca command line usage'
     print ''
-    print 'python gitlawca.py (-h | --help) | --reset=level | --nuke | --scrape | --download | --test-parser=language'
+    print 'python gitlawca.py (-h | --help) | --reset=level | --nuke | --scrape | --download | --test-parser=language | --test-markdown=language'
     print ''
     print '-h | --help: Print this message'
     print '--reset=level: --reset=database: reset Acts database, --reset=github: reset github repository, --reset=all: reset both'
@@ -21,6 +21,7 @@ def usage():
     print '--scrape: Start scraping federal government Justice department web site for consolidated acts'
     print '--download: Start downloading and committing to Github consolidated acts in need of downloading'
     print '--test-parser=language: language=eng or fra. Loads the appropriate test fixture and saves to test.html'
+    print '--test-markdown=language: language=eng or fra. Loads the appropriate test fixture and saves to test.md'
 
 
 def reset(arg):
