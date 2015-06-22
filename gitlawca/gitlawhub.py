@@ -58,3 +58,4 @@ class ActBranch(object):
 
         self.repo.heads.master.checkout()
         self.repo.git.branch('-D', self.branch_name)
+        self.repo.remote('origin').pull()
