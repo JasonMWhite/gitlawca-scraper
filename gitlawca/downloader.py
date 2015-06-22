@@ -7,6 +7,7 @@ from git import Repo
 import os.path
 import urllib2
 from gitlawca.law_parser import prepare_markdown
+from time import sleep
 
 #pylint: disable=W0511
 
@@ -49,14 +50,7 @@ def start():
                 if not os.path.exists(os.path.dirname(filename)):
                     os.makedirs(os.path.dirname(filename))
 
-                doc = urllib2.urlopen(act.url)
-                print 'Downloading file from {}'.format(act.url)
-                text = None
-
-                try:
-                    text = doc.read()
-                except urllib2.URLError:
-                    act.error_downloading = True
+                text = download_act(act)
 
                 if text is None:
                     continue
@@ -79,3 +73,23 @@ def start():
         raise
     finally:
         session.close()
+
+
+def download_act(act):
+    max_retries = config('download')['retries']
+
+    num_retries = 0
+    text = None
+    print 'Downloading file from {}'.format(act.url)
+    while text is None and num_retries < max_retries:
+        try:
+            doc = urllib2.urlopen(act.url)
+            text = doc.read()
+        except urllib2.URLError:
+            sleep(1)
+            num_retries += 1
+
+    if text is None:
+        print 'Error downloading file from {}'.format(act.url)
+        act.error_downloading = True
+    return text

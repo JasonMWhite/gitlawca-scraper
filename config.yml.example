@@ -7,6 +7,7 @@ database:
 download:
   folder: ./data
   limit: 50
+  retries: 3
 github:
   token: ''
   user: ''
