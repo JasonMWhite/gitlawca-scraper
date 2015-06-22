@@ -38,7 +38,8 @@ def remove_marginal_notes(doc):
 def remove_provision_lists(doc):
     def appropriate_provision(tag):
         if tag.name == 'ul' and tag.get('class') == ['ProvisionList']:
-            return tag.li is not None and tag.li.p is not None and tag.li.p.get('class') in (['Section'], ['Subsection'])
+            return tag.li is not None and \
+                   len(tag.li.find_all(lambda tag: tag.name == 'p' and tag.get('class') in (['Section'], ['Subsection']))) > 0
         else:
             return False
 
