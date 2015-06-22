@@ -58,11 +58,16 @@ def test_parser_removes_provision_lists(c41, pretty):
     provision_list = c41.ul
     assert provision_list is not None
     assert '2.' == provision_list.text[0:2]
+    definition = c41.find(lambda tag: tag.name == 'dl' and tag.get('class') == ['Definition'])
+    assert definition.parent.name == 'li'
+    assert definition.find(lambda tag: tag.name == 'ul' and tag.get('class') == ['ProvisionList']) is not None
 
     list_entry = pretty.find(lambda tag: tag.name == 'p' and tag.get('class') == ['Subsection'])
     assert list_entry is not None
     assert '2.' == list_entry.text[0:2]
-    assert pretty.find(lambda tag: tag.name == 'ul' and tag.get('class') == ['ProvisionList']) is None
+    pretty_definition = pretty.find(lambda tag: tag.name == 'dl' and tag.get('class') == ['Definition'])
+    assert pretty_definition.parent.name == 'div'
+    assert pretty_definition.find(lambda tag: tag.name == 'ul' and tag.get('class') == ['ProvisionList']) is not None
 
 
 def test_parser_reformats_definitions(c41, pretty):
