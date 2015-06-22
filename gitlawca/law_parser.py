@@ -127,7 +127,7 @@ def reformat_document(doc):
 
 
 def reformatted_to_markdown(doc):
-    return html2text(unicode(str(doc), 'utf8'))
+    return html2text(unicode(str(doc), 'utf8'), bodywidth=0)
 
 
 def prepare_markdown(doc):
