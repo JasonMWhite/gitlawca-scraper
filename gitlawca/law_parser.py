@@ -109,6 +109,12 @@ def fix_multipart_headers(doc):
     return doc
 
 
+def fix_asterisks(doc):
+    for sup in doc.find_all(lambda tag: tag.name == 'sup' and tag.text == '*'):
+        sup.string = '(*)'
+    return doc
+
+
 rules = [
     strip_versioning,
     deemphasize_headers,
@@ -116,7 +122,8 @@ rules = [
     remove_provision_lists,
     reformat_definitions,
     repoint_links,
-    fix_multipart_headers
+    fix_multipart_headers,
+    fix_asterisks
 ]
 
 

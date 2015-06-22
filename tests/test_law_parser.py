@@ -92,3 +92,9 @@ def test_parser_reformats_multipart_headers(c41, pretty):
 
     pretty_header = pretty.find(lambda tag: tag.name == 'h2' and tag.get('id') == 'h-3')
     assert len(pretty_header.find_all('span')) == 1
+
+
+def test_parser_fixes_asterisks(c41, pretty):
+    assert len(c41.find_all(lambda tag: tag.name == 'sup' and tag.text == '*')) > 0
+    assert len(pretty.find_all(lambda tag: tag.name == 'sup' and tag.text == '*')) == 0
+    assert len(pretty.find_all(lambda tag: tag.name == 'sup' and tag.text == '(*)')) > 0
