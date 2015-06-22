@@ -19,9 +19,14 @@ def strip_versioning(doc):
 
 
 def deemphasize_headers(doc):
-    headers = doc.findAll(lambda tag: tag.name == 'h1' and tag.get('class') != ['Title-of-Act'])
-    for header in headers:
+    for header in doc.findAll(lambda tag: tag.name == 'h1' and tag.get('class') != ['Title-of-Act']):
         header.name = 'h2'
+    return doc
+
+
+def reemphasize_headers(doc):
+    for header in doc.find_all(lambda tag: tag.name == 'h6' and tag.get('class') is None):
+        header.name = 'h5'
     return doc
 
 
@@ -122,6 +127,7 @@ def fix_asterisks(doc):
 rules = [
     strip_versioning,
     deemphasize_headers,
+    reemphasize_headers,
     remove_marginal_notes,
     remove_provision_lists,
     reformat_definitions,
